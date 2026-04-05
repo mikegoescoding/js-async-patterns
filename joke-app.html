@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Random Joke App</title>
+    <style>
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+      #setup {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+      }
+      #punchline {
+        font-size: 1.2em;
+        font-style: italic;
+        color: #555;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 1em;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        margin: 0 auto;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p id="setup"></p>
+      <p id="punchline"></p>
+    </div>
+    <button onclick="getJoke()">Get another joke</button>
+
+    <script>
+      async function getJoke() {
+        try {
+          // Set loading state before fetch begins
+          document.querySelector("#setup").innerHTML = "Loading...";
+          document.querySelector("#punchline").innerHTML = "";
+
+          const response = await fetch(
+            "https://v2.jokeapi.dev/joke/Any?type=twopart"
+          );
+
+          if (!response.ok) {
+            throw new Error(`Something went wrong: ${response.status}`);
+          }
+
+          const data = await response.json();
+          document.querySelector("#setup").innerHTML = data.setup;
+          document.querySelector("#punchline").innerHTML = data.delivery;
+        } catch (error) {
+          // Show error on page — users can't see the console
+          document.querySelector("#setup").innerHTML =
+            "Something went wrong. Try again!";
+          document.querySelector("#punchline").innerHTML = "";
+          console.log("Technical error:", error.message);
+        }
+      }
+
+      // Fetch a joke automatically when the page loads
+      getJoke();
+    </script>
+  </body>
+</html>
